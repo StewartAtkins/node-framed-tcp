@@ -1,0 +1,22 @@
+{
+  "name": "framed-tcp",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodeunit tests/tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/StewartAtkins/node-framed-tcp.git"
+  },
+  "author": "Stewart Atkins",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/StewartAtkins/node-framed-tcp/issues"
+  },
+  "dependencies": {
+    "flexible-buffer": "0.0.1",
+    "event-hook": "~1.0.1"
+  }
+}
