@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "flexible-buffer": "0.0.1",
-    "event-hook": "~1.0.1"
+    "event-hook": "~1.0.1",
+    "uuid": "~1.4.1"
   }
 }

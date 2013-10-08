@@ -1,5 +1,6 @@
 var net = require('net');
 var tcpUtils = require('../');
+var FriendlyBuffer = require('flexible-buffer');
 
 var createSendFunc = function(frame, magicNo){
 	return function(){
@@ -83,8 +84,51 @@ exports.testFramedLargePacket = function(test){
 		return sendBuf;
 	});
 };
-/*
-exports.testFrameWithFlex = function(test){
 
+exports.testFrameWithFlex1 = function(test){
+	var server = net.createServer();
+	server.on('connection', function(socket){
+		tcpUtils.flex(tcpUtils.frame(socket));
+		socket.on("data", function(data){
+			server.close();
+			test.ok(data instanceof FriendlyBuffer, "Buffer is not Friendly");
+			test.equal(data.readUint32(), 0x01020304, "Incorrect payload delivered");
+			test.done();
+		});
+	});
+	server.listen(0, function(){
+		var client = new net.Socket();
+		tcpUtils.flex(tcpUtils.frame(client));
+		client.connect(server.address().port, "127.0.0.1", function(){
+			var buf = new FriendlyBuffer();
+			buf.writeUint32(0x01020304);
+			client.write(buf, function(){
+				client.end();
+			});
+		});
+	});
 };
-*/
+
+exports.testFrameWithFlex2 = function(test){
+	var server = net.createServer();
+	server.on('connection', function(socket){
+		tcpUtils.frame(tcpUtils.flex(socket));
+		socket.on("data", function(data){
+			server.close();
+			test.ok(data instanceof FriendlyBuffer, "Buffer is not Friendly");
+			test.equal(data.readUint32(), 0x01020304, "Incorrect payload delivered");
+			test.done();
+		});
+	});
+	server.listen(0, function(){
+		var client = new net.Socket();
+		tcpUtils.frame(tcpUtils.flex(client));
+		client.connect(server.address().port, "127.0.0.1", function(){
+			var buf = new FriendlyBuffer();
+			buf.writeUint32(0x01020304);
+			client.write(buf, function(){
+				client.end();
+			});
+		});
+	});
+};
