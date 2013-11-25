@@ -20,6 +20,6 @@
     "uuid": "~1.4.1"
   },
   "devDependencies": {
-    "flexible-buffer": "~0.0.1",
+    "flexible-buffer": "~0.0.1"
   }
 }
