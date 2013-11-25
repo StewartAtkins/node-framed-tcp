@@ -1,6 +1,6 @@
 {
   "name": "framed-tcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Provides utilities for working with TCP/IP sockets including framing (for emulating atomic transmission with large packets)",
   "main": "index.js",
   "scripts": {
@@ -16,8 +16,10 @@
     "url": "https://github.com/StewartAtkins/node-framed-tcp/issues"
   },
   "dependencies": {
-    "flexible-buffer": "~0.0.1",
     "event-hook": "~1.0.1",
     "uuid": "~1.4.1"
+  },
+  "devDependencies": {
+    "flexible-buffer": "~0.0.1",
   }
 }
