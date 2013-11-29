@@ -1,6 +1,6 @@
 {
   "name": "framed-tcp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Provides utilities for working with TCP/IP sockets including framing (for emulating atomic transmission with large packets)",
   "main": "index.js",
   "scripts": {
