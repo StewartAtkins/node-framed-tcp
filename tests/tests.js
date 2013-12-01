@@ -26,9 +26,9 @@ var createRecvFunc = function(frameServer, magicNo, test){
 };
 
 var createClient = function(port, frame, sendFunc){
-	var client = new net.Socket();
-	frame(client);
-	client.connect(port, "127.0.0.1", function(){
+	var clientObj = new net.Socket();
+	var client = frame(clientObj);
+	clientObj.connect(port, "127.0.0.1", function(){
 		var cb = function(){
 			client.end();
 		};
@@ -44,8 +44,8 @@ var createClient = function(port, frame, sendFunc){
 
 var createServerAndClient = function(frameServer, frameClient, recvFunc, sendFunc){
 	var server = net.createServer();
-	server.on('connection', function(socket){
-		frameServer(socket);
+	server.on('connection', function(socketObj){
+		var socket = frameServer(socketObj);
 		socket.on("data", function(data){
 			server.close();
 			recvFunc.apply(recvFunc, arguments);
@@ -56,12 +56,13 @@ var createServerAndClient = function(frameServer, frameClient, recvFunc, sendFun
 	});
 };
 
-var frameFunc = function(socket){ tcpUtils.frame(socket); };
-var noOp = function(){}
+var frameFunc = function(socket){ return tcpUtils.frame(socket); };
+var noOp = function(sock){ return sock; }
 
 exports.testFramedServerRecv = function(test){
 	createServerAndClient(frameFunc, noOp, createRecvFunc(true, 1, test), createSendFunc(false, 1));
 };
+
 
 exports.testFramedClientSend = function(test){
 	createServerAndClient(noOp, frameFunc, createRecvFunc(false, 2, test), createSendFunc(true, 2));
@@ -107,26 +108,13 @@ var testFrameWithFlex = function(test, flexFrameFunc){
 };
 
 exports.testFrameWithFlex1 = function(test){
-	var flexFrameFunc = function(socket){ tcpUtils.flex(tcpUtils.frame(socket)); };
+	var flexFrameFunc = function(socket){ return tcpUtils.flex(tcpUtils.frame(socket)); };
 	testFrameWithFlex(test, flexFrameFunc);
 };
 
 exports.testFrameWithFlex2 = function(test){
-	var flexFrameFunc = function(socket){ tcpUtils.frame(tcpUtils.flex(socket)); };
+	var flexFrameFunc = function(socket){ return tcpUtils.frame(tcpUtils.flex(socket)); };
 	testFrameWithFlex(test, flexFrameFunc);
 };
 
-exports.testOpcode = function(test){
-	test.expect(3);
-	var opcodeFrameFunc = function(socket){ tcpUtils.opcode(tcpUtils.frame(socket)); };
-	createServerAndClient(opcodeFrameFunc, opcodeFrameFunc, function(opcode, data){
-		test.equal(opcode, 42, "Buffer is not Friendly");
-		test.equal(data.length, 4, "Buffer is incorrect length");
-		test.equal(data.readUInt32LE(0), 0x01020408, "Incorrect payload delivered");
-		test.done();
-	}, function(){
-		var sendBuf = new Buffer(4);
-		sendBuf.writeUInt32LE(0x01020408, 0);
-		return [42, sendBuf];
-	});
-};
+
