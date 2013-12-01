@@ -16,7 +16,7 @@
     "url": "https://github.com/StewartAtkins/node-framed-tcp/issues"
   },
   "dependencies": {
-    "event-hook": "~1.0.1",
+    "event-hook": "~1.0.1"
   },
   "devDependencies": {
     "flexible-buffer": "~0.0.1"
